@@ -29,7 +29,7 @@ class MainActivity : AppCompatActivity() {
        GlobalScope.launch (Dispatchers.IO){
 
            val response = try{
-RetrofitInstance.api.getCurrentWeather("lviv", "metric","32975a8757688ffdfb49c7c73266659d")
+RetrofitInstance.api.getCurrentWeather("zhovkva", "metric","32975a8757688ffdfb49c7c73266659d")
            }catch (e:IOException){
                Toast.makeText(applicationContext,"app error ${e.message}",Toast.LENGTH_SHORT).show()
                return@launch
@@ -38,19 +38,16 @@ RetrofitInstance.api.getCurrentWeather("lviv", "metric","32975a8757688ffdfb49c7c
                Toast.makeText(applicationContext,"http error ${e.message}",Toast.LENGTH_SHORT).show()
 return@launch
            }
-           println("\n AAAAAAAAAAAAAAAAAAAAAAAAA1\n")
+
 
            if( response.isSuccessful&& response.body()!= null){
                withContext((Dispatchers.Main)){
                    binding.tvText.text="tem : ${response.body()!!.main.temp}"
-                   println("\n AAAAAAAAAAAAAAAAAAAAAAAAA\n")
-
                    println("temp : ${response.body()!!.main.temp}")
-                   println("\nQAAAAAAAAAAAAAAAAAAAAAAAAA\n")
 
                }
            }
-           println("\n AAAAAAAAAAAAAAAAAAAAAAAAA2\n")
+
 
        }
     }
