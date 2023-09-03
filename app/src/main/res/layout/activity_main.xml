@@ -12,7 +12,7 @@
         android:id="@+id/tvText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
+        android:text="Done by Max Pavliv"
         android:textSize="24sp"
         app:layout_constraintBottom_toTopOf="@+id/tv_forecast"
         app:layout_constraintEnd_toEndOf="parent"
@@ -68,8 +68,8 @@
 
         <TextView
             android:id="@+id/tv_temp"
-            android:layout_width="130dp"
-            android:layout_height="84dp"
+            android:layout_width="186dp"
+            android:layout_height="76dp"
             android:layout_marginTop="60dp"
             android:text="24 C"
             android:textColor="@color/black"
@@ -108,8 +108,8 @@
 
         <ImageView
             android:id="@+id/img_weather"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
             app:layout_constraintBottom_toBottomOf="@+id/tv_temp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
