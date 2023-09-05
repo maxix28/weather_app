@@ -27,6 +27,8 @@ class MainActivity : AppCompatActivity() {
     lateinit var  binding : ActivityMainBinding
     lateinit var  forecast_binding : FiveDayBottomBinding
 private lateinit var  dialog: BottomSheetDialog
+     var  city = "lviv"
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -35,7 +37,27 @@ private lateinit var  dialog: BottomSheetDialog
         dialog= BottomSheetDialog(this,R.style.BottomSheetTheme)
         forecast_binding= FiveDayBottomBinding.inflate(layoutInflater)
         dialog.setContentView(forecast_binding.root)
-        getCurrentWeather()
+
+
+
+
+      binding.searchView11.setOnQueryTextListener(object : androidx.appcompat.widget.SearchView.OnQueryTextListener{
+          override fun onQueryTextSubmit(query: String?): Boolean {
+              if(query!=null)
+              {city= query}
+              getCurrentWeather(city)
+
+              return true
+          }
+
+          override fun onQueryTextChange(newText: String?): Boolean {
+              return false
+          }
+
+      })
+
+
+        getCurrentWeather(city)
 
         binding.tvForecast.setOnClickListener {
 
@@ -58,7 +80,7 @@ private lateinit var  dialog: BottomSheetDialog
         GlobalScope.launch (Dispatchers.IO){
 
             val response = try{
-                RetrofitInstance.api.getForecasr("Lviv", "metric","32975a8757688ffdfb49c7c73266659d")
+                RetrofitInstance.api.getForecasr(city, "metric","32975a8757688ffdfb49c7c73266659d")
             }catch (e:IOException){
                 Toast.makeText(applicationContext,"app error ${e.message}",Toast.LENGTH_SHORT).show()
                 return@launch
@@ -91,11 +113,11 @@ private lateinit var  dialog: BottomSheetDialog
 
 
     @SuppressLint("SetTextI18n")
-    private fun getCurrentWeather() {
+    private fun getCurrentWeather(city: String) {
        GlobalScope.launch (Dispatchers.IO){
 
            val response = try{
-RetrofitInstance.api.getCurrentWeather("lviv", "metric","32975a8757688ffdfb49c7c73266659d")
+RetrofitInstance.api.getCurrentWeather(city, "metric","32975a8757688ffdfb49c7c73266659d")
            }catch (e:IOException){
                Toast.makeText(applicationContext,"app error ${e.message}",Toast.LENGTH_SHORT).show()
                return@launch

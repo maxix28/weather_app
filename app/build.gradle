@@ -53,7 +53,8 @@ dependencies {
 
 //Picasso
     implementation 'com.squareup.picasso:picasso:2.8'
-
+//location
+    implementation 'com.google.android.gms:play-services-location:21.0.1'
 
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     testImplementation 'junit:junit:4.13.2'
