@@ -4,8 +4,14 @@ import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.weatherapp.adapter.RvAdapter
+import com.example.weatherapp.data.forecastModels.ForecastData
 import com.example.weatherapp.databinding.ActivityMainBinding
+import com.example.weatherapp.databinding.FiveDayBottomBinding
 import com.example.weatherapp.utils.RetrofitInstance
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.squareup.picasso.Picasso
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -15,24 +21,81 @@ import retrofit2.HttpException
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
 class MainActivity : AppCompatActivity() {
     lateinit var  binding : ActivityMainBinding
+    lateinit var  forecast_binding : FiveDayBottomBinding
+private lateinit var  dialog: BottomSheetDialog
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
          binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
+        dialog= BottomSheetDialog(this,R.style.BottomSheetTheme)
+        forecast_binding= FiveDayBottomBinding.inflate(layoutInflater)
+        dialog.setContentView(forecast_binding.root)
         getCurrentWeather()
+
+        binding.tvForecast.setOnClickListener {
+
+            openDialog()
+
+        }
     }
+
+    private fun openDialog() {
+        getForecast()
+        forecast_binding.rvForecast.apply{
+            setHasFixedSize(true)
+            layoutManager= GridLayoutManager(this@MainActivity,1,RecyclerView.HORIZONTAL,false)
+        }
+        dialog.window?.attributes?.windowAnimations=R.style.DialogAnimation
+        dialog.show()
+    }
+
+    private fun getForecast() {
+        GlobalScope.launch (Dispatchers.IO){
+
+            val response = try{
+                RetrofitInstance.api.getForecasr("Lviv", "metric","32975a8757688ffdfb49c7c73266659d")
+            }catch (e:IOException){
+                Toast.makeText(applicationContext,"app error ${e.message}",Toast.LENGTH_SHORT).show()
+                return@launch
+
+            }catch (e :HttpException){
+                Toast.makeText(applicationContext,"http error ${e.message}",Toast.LENGTH_SHORT).show()
+                return@launch
+            }
+
+
+            if( response.isSuccessful&& response.body()!= null){
+                withContext((Dispatchers.Main)){
+
+                    val data = response.body()!!
+                    var ForecastArray= arrayListOf<ForecastData>()
+                    ForecastArray = data.list as ArrayList<ForecastData>
+                    val adapter= RvAdapter(ForecastArray)
+                    forecast_binding.rvForecast.adapter=adapter
+                    forecast_binding.textView.text=" Five days forecast in ${data.city.name}"
+
+
+                }
+
+            }
+
+        }
+    }
+
+
+
 
     @SuppressLint("SetTextI18n")
     private fun getCurrentWeather() {
        GlobalScope.launch (Dispatchers.IO){
 
            val response = try{
-RetrofitInstance.api.getCurrentWeather("new york", "metric","32975a8757688ffdfb49c7c73266659d")
+RetrofitInstance.api.getCurrentWeather("lviv", "metric","32975a8757688ffdfb49c7c73266659d")
            }catch (e:IOException){
                Toast.makeText(applicationContext,"app error ${e.message}",Toast.LENGTH_SHORT).show()
                return@launch
